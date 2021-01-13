@@ -11,6 +11,9 @@ const Post = ({ post }) => {
           <strong>{post.title}</strong>
         </p>
         <p>{post.caption}</p>
+        <div>{post.comment.map( c => 
+        (<Card>{c.userProfile.name}: {c.message}</Card>)
+        )}</div>
       </CardBody>
     </Card>
   );
