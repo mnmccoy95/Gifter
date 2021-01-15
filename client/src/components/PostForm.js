@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Button, Form, FormGroup, Label, Input, Card, CardBody } from "reactstrap";
+import { PostContext } from "./PostProvider"
+import { useHistory } from "react-router-dom";
 
 const PostForm = () => {
+    const history = useHistory();
     const [post, setPost] = useState({})
+    const { addPost } = useContext(PostContext);
     const user = JSON.parse(localStorage.getItem('userProfile'));
     const submit = (evt) => {
         const postToSend = {
@@ -12,10 +16,8 @@ const PostForm = () => {
             UserProfileId: parseInt(user.id)
         };
 
-        addPost(postToSend).then(() => {
-            window.location.reload();
-        }
-        );
+        addPost(postToSend)
+        history.push("/");
     };
 
     const handleControlledInputChange = (event) => {
@@ -23,17 +25,6 @@ const PostForm = () => {
         newPost[event.target.name] = event.target.value
         setPost(newPost)
     };
-
-    const addPost = (post) => {
-        return fetch("/api/post", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(post),
-        });
-    };
-
 
     return (
         <div className="container pt-4">
