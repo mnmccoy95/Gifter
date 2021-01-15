@@ -11,31 +11,36 @@ import { UserProfileProvider } from "../providers/UserProfileProvider"
 const ApplicationViews = (props) => {
   return (
     <main>
-      <Switch>
-        <PostProvider>
-          <Route path="/" exact>
-            <PostSearch />
-            <PostList />
-          </Route>
+      <Route render={() => {
+        if (localStorage.getItem("userProfile")) {
+          return (
+            <Switch>
+              <PostProvider>
+                <Route path="/" exact>
+                  <PostSearch />
+                  <PostList />
+                </Route>
 
+                <Route path="/posts/add" exact>
+                  <PostForm />
+                </Route>
+              </PostProvider>
+            </Switch>
+          )
+        } else {
+          return <Switch>
+            <UserProfileProvider>
+              <Route path="/login" exact>
+                <Login />
+              </Route>
 
-          <UserProfileProvider>
-            <Route path="/login" exact>
-              <Login />
-            </Route>
-
-            <Route path="/register" exact>
-              <Register />
-            </Route>
-          </UserProfileProvider>
-
-
-
-          <Route path="/posts/add" exact>
-            <PostForm />
-          </Route>
-        </PostProvider>
-      </Switch>
+              <Route path="/register" exact>
+                <Register />
+              </Route>
+            </UserProfileProvider>
+          </Switch>
+        }
+      }} />
     </main>
   );
 };

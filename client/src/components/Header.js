@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 const Header = () => {
@@ -49,7 +49,7 @@ const Header = () => {
       <dialog className="logout--dialog" ref={existDialog}>
         <div>Are you sure you want to logout?</div>
         <button className="logout--yes" onClick={() => {
-          const userId = sessionStorage.getItem('userProfile');
+          const userId = localStorage.getItem('userProfile');
           localStorage.clear(userId);
           history.push("/login");
           existDialog.current.close()
