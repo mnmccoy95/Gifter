@@ -23,6 +23,7 @@ export function UserProfileProvider(props) {
             .then((signInResponse) => getUserProfile(signInResponse.user.uid))
             .then((userProfile) => {
                 localStorage.setItem("userProfile", JSON.stringify(userProfile));
+                console.log(userProfile);
                 setIsLoggedIn(true);
             });
     };

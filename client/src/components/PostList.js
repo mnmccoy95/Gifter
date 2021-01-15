@@ -3,7 +3,7 @@ import { PostContext } from './PostProvider';
 import Post from './Post';
 
 const PostList = () => {
-    const {posts, getAllPosts} = useContext(PostContext);
+    const { posts, getAllPosts } = useContext(PostContext);
 
     useEffect(() => {
         getAllPosts();

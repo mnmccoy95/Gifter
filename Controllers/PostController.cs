@@ -3,10 +3,10 @@ using Gifter.Data;
 using Gifter.Repositories;
 using Gifter.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Gifter.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PostController : ControllerBase
@@ -73,10 +73,6 @@ namespace Gifter.Controllers
             return Ok(_postRepository.Search(q, sortDesc));
         }
 
-        private UserProfile GetCurrentUserProfile()
-        {
-            var firebaseUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            return _userProfileRepository.GetByFirebaseUserId(firebaseUserId);
-        }
+       
     }
 }
