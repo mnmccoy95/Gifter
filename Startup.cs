@@ -77,14 +77,15 @@ namespace Gifter
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            
 
         }
     }
