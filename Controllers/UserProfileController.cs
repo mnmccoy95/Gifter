@@ -2,6 +2,8 @@
 using Gifter.Data;
 using Gifter.Repositories;
 using Gifter.Models;
+using System;
+using System.Security.Claims;
 
 namespace Gifter.Controllers
 {
@@ -15,28 +17,18 @@ namespace Gifter.Controllers
             _userProfileRepository = userProfileRepository;
         }
 
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("{firebaseUserId}")]
+        public IActionResult GetUserProfile(string firebaseUserId)
         {
-            return Ok(_userProfileRepository.GetAll());
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult Get(int id)
-        {
-            var post = _userProfileRepository.GetById(id);
-            if (post == null)
-            {
-                return NotFound();
-            }
-            return Ok(post);
+            return Ok(_userProfileRepository.GetByFirebaseUserId(firebaseUserId));
         }
 
         [HttpPost]
         public IActionResult Post(UserProfile userProfile)
         {
+            userProfile.DateCreated = DateTime.Now;
             _userProfileRepository.Add(userProfile);
-            return CreatedAtAction("Get", new { id = userProfile.Id }, userProfile);
+            return Ok(userProfile);
         }
 
         [HttpPut("{id}")]
@@ -56,6 +48,12 @@ namespace Gifter.Controllers
         {
             _userProfileRepository.Delete(id);
             return NoContent();
+        }
+
+        private UserProfile GetCurrentUserProfile()
+        {
+            var firebaseUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            return _userProfileRepository.GetByFirebaseUserId(firebaseUserId);
         }
     }
 }

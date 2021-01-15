@@ -15,6 +15,17 @@ namespace Gifter.Repositories
             _context = context;
         }
 
+        public UserProfile GetByFirebaseUserId(string firebaseUserId)
+        {
+            return _context.UserProfile
+                    .FirstOrDefault(up => up.FirebaseId == firebaseUserId);
+        }
+
+        public void Add(UserProfile userProfile)
+        {
+            _context.Add(userProfile);
+            _context.SaveChanges();
+        }
         public List<UserProfile> GetAll()
         {
             return _context.UserProfile.ToList();
@@ -24,11 +35,7 @@ namespace Gifter.Repositories
         {
             return _context.UserProfile.FirstOrDefault(p => p.Id == id);
         }
-        public void Add(UserProfile userProfile)
-        {
-            _context.Add(userProfile);
-            _context.SaveChanges();
-        }
+        
 
         public void Update(UserProfile userProfile)
         {
