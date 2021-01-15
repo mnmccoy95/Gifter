@@ -2,21 +2,20 @@
 using Gifter.Data;
 using Gifter.Repositories;
 using Gifter.Models;
+using System;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 
 namespace Gifter.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PostController : ControllerBase
     {
         private readonly IPostRepository _postRepository;
-        private readonly IUserProfileRepository _userProfileRepository;
-        public PostController(IPostRepository postRepository, IUserProfileRepository userProfileRepository)
+        public PostController(IPostRepository postRepository)
         {
             _postRepository = postRepository;
-            _userProfileRepository = userProfileRepository;
         }
 
         [HttpGet]
@@ -41,12 +40,24 @@ namespace Gifter.Controllers
         {
             return Ok(_postRepository.GetByUserProfileId(id));
         }
+
+        [HttpGet("search")]
+        public IActionResult Search(string q, bool sortDesc)
+        {
+            if (q == null)
+            {
+                return Ok(_postRepository.GetAll());
+            }
+
+            return Ok(_postRepository.Search(q, sortDesc));
+        }
+
         [HttpPost]
         public IActionResult Post(Post post)
         {
-            post.DateCreated = System.DateTime.Now;
+            post.DateCreated = DateTime.Now;
             _postRepository.Add(post);
-            return CreatedAtAction("Get", new { id = post.Id }, post);
+            return Ok(post);
         }
 
         [HttpPut("{id}")]
@@ -67,12 +78,5 @@ namespace Gifter.Controllers
             _postRepository.Delete(id);
             return NoContent();
         }
-        [HttpGet("search")]
-        public IActionResult Search(string q, bool sortDesc)
-        {
-            return Ok(_postRepository.Search(q, sortDesc));
-        }
-
-       
     }
 }

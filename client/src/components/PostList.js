@@ -1,13 +1,24 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { PostContext } from './PostProvider';
 import Post from './Post';
+import { UserProfileContext } from "../providers/UserProfileProvider";
+
 
 const PostList = () => {
-    const { posts, getAllPosts } = useContext(PostContext);
+    const { getToken } = useContext(UserProfileContext);
+    const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        getAllPosts();
-    }, []);
+        getToken().then((token) =>
+            fetch(`/api/post`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+                .then(res => res.json())
+                .then(setPosts));
+    }, [])
 
     return (
         <div className="container">

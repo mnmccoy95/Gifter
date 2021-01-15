@@ -1,21 +1,31 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Gifter.Data;
-using Gifter.Repositories;
-using Gifter.Models;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System;
+using Gifter.Data;
+using Gifter.Models;
+using Gifter.Repositories;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gifter.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class UserProfileController : ControllerBase
     {
-        private readonly IUserProfileRepository _userProfileRepository;
-        public UserProfileController(IUserProfileRepository userProfileRepository)
+        private UserProfile GetCurrentUserProfile()
         {
-            _userProfileRepository = userProfileRepository;
+            var firebaseUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            return _userProfileRepository.GetByFirebaseUserId(firebaseUserId);
         }
+
+        private readonly IUserProfileRepository _userProfileRepository;
+        public UserProfileController(ApplicationDbContext context)
+        {
+            _userProfileRepository = new UserProfileRepository(context);
+        }
+
 
         [HttpGet("{firebaseUserId}")]
         public IActionResult GetUserProfile(string firebaseUserId)
@@ -30,25 +40,5 @@ namespace Gifter.Controllers
             _userProfileRepository.Add(userProfile);
             return Ok(userProfile);
         }
-
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, UserProfile userProfile)
-        {
-            if (id != userProfile.Id)
-            {
-                return BadRequest();
-            }
-
-            _userProfileRepository.Update(userProfile);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            _userProfileRepository.Delete(id);
-            return NoContent();
-        }
-
     }
 }

@@ -15,16 +15,18 @@ const ApplicationViews = (props) => {
         if (localStorage.getItem("userProfile")) {
           return (
             <Switch>
-              <PostProvider>
-                <Route path="/" exact>
-                  <PostSearch />
-                  <PostList />
-                </Route>
+              <UserProfileProvider>
+                <PostProvider>
+                  <Route path="/" exact>
+                    <PostSearch />
+                    <PostList />
+                  </Route>
 
-                <Route path="/posts/add" exact>
-                  <PostForm />
-                </Route>
-              </PostProvider>
+                  <Route path="/posts/add" exact>
+                    <PostForm />
+                  </Route>
+                </PostProvider>
+              </UserProfileProvider>
             </Switch>
           )
         } else {

@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Button, Form, FormGroup, Label, Input, Card, CardBody } from "reactstrap";
+import { UserProfileContext } from "../providers/UserProfileProvider";
 
 const PostForm = () => {
     const [post, setPost] = useState({})
+    const { getToken } = useContext(UserProfileContext);
     const user = JSON.parse(localStorage.getItem('userProfile'));
     const submit = (evt) => {
         const postToSend = {
@@ -25,13 +27,15 @@ const PostForm = () => {
     };
 
     const addPost = (post) => {
-        return fetch("/api/post", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(post),
-        });
+        return getToken().then((token) =>
+            fetch("/api/post", {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`, // The token gets added to the Authorization header
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(post),
+            }));
     };
 
 
